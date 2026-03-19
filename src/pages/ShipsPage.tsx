@@ -1,7 +1,10 @@
-import { Plus, Trash2, Star, Edit3, Copy, Download, Upload, Heart, Shield, Swords } from 'lucide-react';
+import { Plus, Trash2, Star, Edit3, Copy, Download, Upload } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { ClassBadge } from '../components/ClassBadge';
 import { InventoryGrid } from '../components/InventoryGrid';
+import { EditableValue } from '../components/EditableValue';
+import { SeedEditor } from '../components/SeedEditor';
+import { ConfirmModal } from '../components/ConfirmModal';
 import { useState } from 'react';
 import type { ItemClass, Ship } from '../types';
 
@@ -16,6 +19,7 @@ export function ShipsPage() {
   const { activeSave, updateShip, deleteShip, addNotification } = useStore();
   const [selectedShip, setSelectedShip] = useState<string | null>(null);
   const [editingField, setEditingField] = useState<string | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
   if (!activeSave) return null;
   const ships = activeSave.playerState.ships;
@@ -26,12 +30,20 @@ export function ShipsPage() {
     addNotification(`飛船等級已更新為 ${newClass} 級`, 'success');
   };
 
+  const handleDelete = () => {
+    if (active) {
+      deleteShip(active.id);
+      setSelectedShip(null);
+      setConfirmDelete(false);
+    }
+  };
+
   return (
     <div className="space-y-6 animate-fadeIn">
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-lg font-bold text-nms-text">飛船艦隊管理 <span className="text-xs text-nms-text-muted font-normal">Ship Fleet Management</span></h2>
-          <p className="text-xs text-nms-text-muted mt-1">管理所有飛船，編輯屬性、背包與種子碼</p>
+          <p className="text-xs text-nms-text-muted mt-1">管理所有飛船，編輯屬性、背包與種子碼 | <span className="text-nms-accent">Alt+S</span> 快速切換</p>
         </div>
         <div className="flex gap-2">
           <button onClick={() => addNotification('匯入飛船功能開發中...', 'info')} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-nms-card border border-nms-border text-nms-text-dim text-xs hover:bg-nms-hover transition-colors">
@@ -77,7 +89,7 @@ export function ShipsPage() {
                     defaultValue={active.name}
                     autoFocus
                     onBlur={(e) => { updateShip(active.id, { name: e.target.value }); setEditingField(null); }}
-                    onKeyDown={(e) => { if (e.key === 'Enter') (e.target as HTMLInputElement).blur(); }}
+                    onKeyDown={(e) => { if (e.key === 'Enter') (e.target as HTMLInputElement).blur(); if (e.key === 'Escape') setEditingField(null); }}
                     className="bg-nms-bg border border-nms-accent rounded px-2 py-0.5 text-sm font-bold text-nms-text outline-none"
                   />
                 ) : (
@@ -88,7 +100,7 @@ export function ShipsPage() {
                     </button>
                   </div>
                 )}
-                <div className="text-[10px] text-nms-text-muted">Seed: {active.seed} | {active.type}</div>
+                <SeedEditor seed={active.seed} onSeedChange={(seed) => updateShip(active.id, { seed })} />
               </div>
             </div>
             <div className="flex items-center gap-2">
@@ -117,41 +129,43 @@ export function ShipsPage() {
               <button onClick={() => addNotification('飛船已複製', 'success')} className="p-1.5 rounded-lg text-nms-text-muted hover:text-nms-accent hover:bg-nms-hover transition-colors" title="複製">
                 <Copy size={14} />
               </button>
-              <button onClick={() => { deleteShip(active.id); setSelectedShip(null); }} className="p-1.5 rounded-lg text-nms-text-muted hover:text-nms-red hover:bg-nms-hover transition-colors" title="刪除">
+              <button onClick={() => setConfirmDelete(true)} className="p-1.5 rounded-lg text-nms-text-muted hover:text-nms-red hover:bg-nms-hover transition-colors" title="刪除">
                 <Trash2 size={14} />
               </button>
             </div>
           </div>
 
-          {/* Stats */}
-          <div className="px-4 py-3 grid grid-cols-2 md:grid-cols-4 gap-3">
-            <div className="bg-nms-bg rounded-lg p-3 text-center">
-              <Heart size={16} className="text-nms-red mx-auto mb-1" />
-              <div className="text-[10px] text-nms-text-muted">血量 HP</div>
-              <div className="text-lg font-bold text-nms-text">{active.health}</div>
+          {/* Editable Stats */}
+          <div className="px-4 py-3 grid grid-cols-2 md:grid-cols-5 gap-3">
+            <div className="bg-nms-bg rounded-lg p-3">
+              <EditableValue value={active.health} max={9999} label="血量 HP" color="text-nms-red" showBar onChange={(v) => updateShip(active.id, { health: v })} />
             </div>
-            <div className="bg-nms-bg rounded-lg p-3 text-center">
-              <Shield size={16} className="text-nms-accent mx-auto mb-1" />
-              <div className="text-[10px] text-nms-text-muted">護盾 Shield</div>
-              <div className="text-lg font-bold text-nms-text">{active.shield}</div>
+            <div className="bg-nms-bg rounded-lg p-3">
+              <EditableValue value={active.shield} max={9999} label="護盾 Shield" color="text-nms-accent" showBar onChange={(v) => updateShip(active.id, { shield: v })} />
             </div>
-            <div className="bg-nms-bg rounded-lg p-3 text-center">
-              <Swords size={16} className="text-nms-gold mx-auto mb-1" />
-              <div className="text-[10px] text-nms-text-muted">攻擊 Damage</div>
-              <div className="text-lg font-bold text-nms-text">{active.damage}</div>
+            <div className="bg-nms-bg rounded-lg p-3">
+              <EditableValue value={active.damage} max={9999} label="攻擊 Damage" color="text-nms-gold" showBar onChange={(v) => updateShip(active.id, { damage: v })} />
             </div>
-            <div className="bg-nms-bg rounded-lg p-3 text-center">
-              <Star size={16} className="text-nms-purple mx-auto mb-1" />
-              <div className="text-[10px] text-nms-text-muted">類型 Type</div>
-              <div className="text-sm font-bold text-nms-text mt-0.5">
-                <select
-                  value={active.type}
-                  onChange={(e) => updateShip(active.id, { type: e.target.value as Ship['type'] })}
-                  className="bg-transparent border-none text-nms-text text-sm font-bold outline-none cursor-pointer"
-                >
-                  {SHIP_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
-                </select>
-              </div>
+            <div className="bg-nms-bg rounded-lg p-3">
+              <div className="text-[10px] text-nms-text-muted mb-0.5">類型 Type</div>
+              <select
+                value={active.type}
+                onChange={(e) => updateShip(active.id, { type: e.target.value as Ship['type'] })}
+                className="w-full bg-transparent border-none text-nms-text text-sm font-bold outline-none cursor-pointer"
+              >
+                {SHIP_TYPES.map(t => <option key={t} value={t}>{typeIcons[t]} {t}</option>)}
+              </select>
+            </div>
+            <div className="bg-nms-bg rounded-lg p-3 flex flex-col justify-center">
+              <button
+                onClick={() => {
+                  updateShip(active.id, { class: 'S', health: 9999, shield: 9999, damage: 9999 });
+                  addNotification(`${active.name} 已全屬性最大化！`, 'success');
+                }}
+                className="w-full py-1.5 rounded-lg bg-gradient-to-r from-class-s/20 to-nms-gold/10 border border-class-s/30 text-class-s text-xs font-bold hover:from-class-s/30 hover:to-nms-gold/20 transition-all"
+              >
+                <Star size={12} className="inline mr-1" />一鍵 MAX
+              </button>
             </div>
           </div>
 
@@ -163,6 +177,17 @@ export function ShipsPage() {
           </div>
         </div>
       )}
+
+      {/* Delete confirmation */}
+      <ConfirmModal
+        open={confirmDelete}
+        title="確認刪除飛船"
+        message={`確定要刪除「${active?.name}」嗎？此操作無法復原。`}
+        confirmLabel="刪除"
+        variant="danger"
+        onConfirm={handleDelete}
+        onCancel={() => setConfirmDelete(false)}
+      />
     </div>
   );
 }

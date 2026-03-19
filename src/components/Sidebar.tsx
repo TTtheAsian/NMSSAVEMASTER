@@ -6,19 +6,19 @@ import {
 import { useStore } from '../store/useStore';
 
 const menuItems = [
-  { id: 'dashboard', label: '控制面板', labelEN: 'Dashboard', icon: LayoutDashboard },
-  { id: 'saves', label: '存檔管理', labelEN: 'Saves', icon: Save },
-  { id: 'inventory', label: '物品背包', labelEN: 'Inventory', icon: Package },
-  { id: 'ships', label: '飛船艦隊', labelEN: 'Ships', icon: Rocket },
-  { id: 'multitools', label: '多功能工具', labelEN: 'Multi-Tools', icon: Crosshair },
-  { id: 'freighter', label: '貨船管理', labelEN: 'Freighter', icon: Ship },
-  { id: 'vehicles', label: '載具管理', labelEN: 'Vehicles', icon: Truck },
-  { id: 'companions', label: '同伴寵物', labelEN: 'Companions', icon: PawPrint },
-  { id: 'bases', label: '基地管理', labelEN: 'Bases', icon: Home },
-  { id: 'settlements', label: '定居點', labelEN: 'Settlements', icon: Building2 },
-  { id: 'squadron', label: '中隊管理', labelEN: 'Squadron', icon: UserCheck },
-  { id: 'account', label: '帳號資料', labelEN: 'Account', icon: Users },
-  { id: 'settings', label: '設定', labelEN: 'Settings', icon: Settings },
+  { id: 'dashboard', label: '控制面板', labelEN: 'Dashboard', icon: LayoutDashboard, shortcut: 'Alt+D' },
+  { id: 'saves', label: '存檔管理', labelEN: 'Saves', icon: Save, shortcut: '' },
+  { id: 'inventory', label: '物品背包', labelEN: 'Inventory', icon: Package, shortcut: 'Alt+I' },
+  { id: 'ships', label: '飛船艦隊', labelEN: 'Ships', icon: Rocket, shortcut: 'Alt+S' },
+  { id: 'multitools', label: '多功能工具', labelEN: 'Multi-Tools', icon: Crosshair, shortcut: 'Alt+M' },
+  { id: 'freighter', label: '貨船管理', labelEN: 'Freighter', icon: Ship, shortcut: 'Alt+F' },
+  { id: 'vehicles', label: '載具管理', labelEN: 'Vehicles', icon: Truck, shortcut: 'Alt+V' },
+  { id: 'companions', label: '同伴寵物', labelEN: 'Companions', icon: PawPrint, shortcut: 'Alt+C' },
+  { id: 'bases', label: '基地管理', labelEN: 'Bases', icon: Home, shortcut: 'Alt+B' },
+  { id: 'settlements', label: '定居點', labelEN: 'Settlements', icon: Building2, shortcut: '' },
+  { id: 'squadron', label: '中隊管理', labelEN: 'Squadron', icon: UserCheck, shortcut: '' },
+  { id: 'account', label: '帳號資料', labelEN: 'Account', icon: Users, shortcut: '' },
+  { id: 'settings', label: '設定', labelEN: 'Settings', icon: Settings, shortcut: '' },
 ];
 
 export function Sidebar() {
@@ -57,10 +57,15 @@ export function Sidebar() {
             >
               <Icon size={18} className={`flex-shrink-0 ${isActive ? 'text-nms-accent' : 'text-nms-text-muted group-hover:text-nms-text-dim'}`} />
               {!sidebarCollapsed && (
-                <div className="animate-slideIn overflow-hidden">
+                <div className="animate-slideIn overflow-hidden flex-1">
                   <div className="text-sm font-medium whitespace-nowrap">{item.label}</div>
                   <div className="text-[10px] text-nms-text-muted whitespace-nowrap">{item.labelEN}</div>
                 </div>
+              )}
+              {!sidebarCollapsed && item.shortcut && (
+                <kbd className="text-[8px] px-1 py-0.5 rounded bg-nms-bg border border-nms-border text-nms-text-muted font-mono opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
+                  {item.shortcut}
+                </kbd>
               )}
               {sidebarCollapsed && (
                 <div className="absolute left-full ml-2 px-2 py-1 bg-nms-card rounded-md text-xs text-nms-text whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity shadow-lg border border-nms-border z-50">
