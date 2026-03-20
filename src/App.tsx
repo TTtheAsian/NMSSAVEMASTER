@@ -15,6 +15,7 @@ import { BasesPage } from './pages/BasesPage';
 import { SettlementsPage } from './pages/SettlementsPage';
 import { DiscoveryPage } from './pages/DiscoveryPage';
 import { SquadronPage } from './pages/SquadronPage';
+import { DifficultyPage } from './pages/DifficultyPage';
 import { AccountPage } from './pages/AccountPage';
 import { SettingsPage } from './pages/SettingsPage';
 import { useStore } from './store/useStore';
@@ -33,6 +34,7 @@ const pages: Record<string, React.FC> = {
   settlements: SettlementsPage,
   discovery: DiscoveryPage,
   squadron: SquadronPage,
+  difficulty: DifficultyPage,
   account: AccountPage,
   settings: SettingsPage,
 };
@@ -49,10 +51,18 @@ function App() {
         e.preventDefault();
         useStore.getState().addNotification('存檔已儲存！', 'success');
       }
-      // Ctrl+Z to undo
-      if ((e.metaKey || e.ctrlKey) && e.key === 'z') {
+      // Ctrl+Z to undo, Ctrl+Shift+Z to redo
+      if ((e.metaKey || e.ctrlKey) && e.key === 'z' && !e.shiftKey) {
         e.preventDefault();
-        useStore.getState().addNotification('已還原上次修改', 'info');
+        useStore.getState().undo();
+      }
+      if ((e.metaKey || e.ctrlKey) && e.key === 'z' && e.shiftKey) {
+        e.preventDefault();
+        useStore.getState().redo();
+      }
+      if ((e.metaKey || e.ctrlKey) && e.key === 'y') {
+        e.preventDefault();
+        useStore.getState().redo();
       }
       // Number key navigation (1-9 for tabs when not in input)
       if (e.altKey && !e.ctrlKey && !e.metaKey) {

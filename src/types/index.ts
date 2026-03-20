@@ -128,6 +128,36 @@ export interface SquadronPilot {
   rank: number;
 }
 
+export interface DifficultySettings {
+  deathConsequences: number;      // 0=none, 1=mild, 2=harsh, 3=permadeath
+  damageReceived: number;         // 0.1-10.0 multiplier
+  damageGiven: number;            // 0.1-10.0 multiplier
+  hazardDrain: number;            // 0.1-10.0
+  energyDrain: number;            // 0.1-10.0
+  substanceCollection: number;    // 0.1-10.0
+  chargingRequirements: number;   // 0.1-10.0
+  fuelUse: number;                // 0.1-10.0
+  launchFuelCost: number;         // 0.1-10.0
+  currencyCost: number;           // 0.1-10.0
+  scannerRecharge: number;        // 0.1-10.0
+  reputationGain: number;         // 0.1-10.0
+  creatureHostility: number;      // 0.1-10.0
+  spaceCombatTimers: number;      // 0.1-10.0
+  groundCombatTimers: number;     // 0.1-10.0
+  sprintingCost: number;          // 0.1-10.0
+  breakTechOnDamage: number;      // 0.0-1.0 probability
+  inventoryStackLimits: number;   // 0=low, 1=normal, 2=high
+  // Toggles
+  craftingIsFree: boolean;
+  tutorialEnabled: boolean;
+  startWithAllItemsKnown: boolean;
+  baseAutoPower: boolean;
+  inventoriesAlwaysInRange: boolean;
+  allSlotsUnlocked: boolean;
+  warpDriveRequirements: boolean;
+  activeSurvivalBars: boolean;
+}
+
 export interface PlayerState {
   units: number;
   nanites: number;
@@ -146,6 +176,7 @@ export interface PlayerState {
   bases: Base[];
   settlements: Settlement[];
   squadron: SquadronPilot[];
+  difficulty: DifficultySettings;
 }
 
 export interface SaveFile {
