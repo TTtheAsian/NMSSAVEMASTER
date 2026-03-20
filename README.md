@@ -1,73 +1,43 @@
-# React + TypeScript + Vite
+# NMS Save Master - No Man's Sky 存檔管理大師
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+基於 Web 的 No Man's Sky 存檔編輯器，支援讀取、反混淆、編輯及匯出 NMS 存檔。
 
-Currently, two official plugins are available:
+## 需求
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- [Node.js](https://nodejs.org/) v18 以上
 
-## React Compiler
+## 快速啟動
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+下載（或 clone）本倉庫後，依照你的作業系統執行對應的啟動檔：
 
-## Expanding the ESLint configuration
+### Windows
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+雙擊 `start.bat`
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### macOS / Linux
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+./start.sh
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+啟動後會自動安裝依賴並開啟瀏覽器。
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 其他指令
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm run dev       # 啟動開發伺服器
+npm run build     # 建構正式版本
+npm run preview   # 預覽建構結果
+```
+
+## 專案結構
+
+```
+nomanssave/db/     NMS 存檔欄位對照表（jsonmap.txt / jsonmapac.txt）
+src/
+  components/      UI 元件
+  data/            資料解析與欄位映射
+  pages/           頁面
+  store/           狀態管理
+  types/           TypeScript 型別定義
 ```
