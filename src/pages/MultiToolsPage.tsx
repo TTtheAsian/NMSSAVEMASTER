@@ -1,7 +1,8 @@
-import { Plus, Edit3, Download, Copy } from 'lucide-react';
+import { Plus, Edit3, Download, Copy, Star } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { ClassBadge } from '../components/ClassBadge';
 import { InventoryGrid } from '../components/InventoryGrid';
+import { SeedEditor } from '../components/SeedEditor';
 import { useState } from 'react';
 import type { ItemClass, MultiTool } from '../types';
 
@@ -71,10 +72,16 @@ export function MultiToolsPage() {
                     <button onClick={() => setEditingField('name')} className="text-nms-text-muted hover:text-nms-purple"><Edit3 size={12} /></button>
                   </div>
                 )}
-                <div className="text-[10px] text-nms-text-muted">Seed: {active.seed}</div>
+                <SeedEditor seed={active.seed} onSeedChange={(seed) => updateMultiTool(active.id, { seed })} />
               </div>
             </div>
             <div className="flex items-center gap-2">
+              <button
+                onClick={() => { updateMultiTool(active.id, { class: 'S' }); addNotification(`${active.name} 已升級為 S 級！`, 'success'); }}
+                className="flex items-center gap-1 px-2 py-1 rounded-lg bg-class-s/10 border border-class-s/30 text-class-s text-[10px] font-bold hover:bg-class-s/20 transition-colors"
+              >
+                <Star size={10} /> S級
+              </button>
               <select
                 value={active.type}
                 onChange={(e) => updateMultiTool(active.id, { type: e.target.value as MultiTool['type'] })}

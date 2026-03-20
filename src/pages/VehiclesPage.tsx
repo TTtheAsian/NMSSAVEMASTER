@@ -1,6 +1,7 @@
 import { Edit3, Wrench, Plus } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { InventoryGrid } from '../components/InventoryGrid';
+import { SeedEditor } from '../components/SeedEditor';
 import { useState } from 'react';
 
 const vehicleIcons: Record<string, string> = {
@@ -74,7 +75,8 @@ export function VehiclesPage() {
                     <button onClick={() => setEditingName(true)} className="text-nms-text-muted hover:text-nms-green"><Edit3 size={12} /></button>
                   </div>
                 )}
-                <div className="text-[10px] text-nms-text-muted">{vehicleDesc[active.type]} | Seed: {active.seed}</div>
+                <div className="text-[10px] text-nms-text-muted mb-0.5">{vehicleDesc[active.type]}</div>
+                <SeedEditor seed={active.seed} onSeedChange={(seed) => updateVehicle(active.id, { seed })} />
               </div>
             </div>
             <button

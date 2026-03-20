@@ -2,6 +2,8 @@ import { Ship, Edit3, Wrench, AlertTriangle, Star } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { ClassBadge } from '../components/ClassBadge';
 import { InventoryGrid } from '../components/InventoryGrid';
+import { SeedEditor } from '../components/SeedEditor';
+import { CoordinateViewer } from '../components/CoordinateViewer';
 
 export function FreighterPage() {
   const { activeSave, addNotification } = useStore();
@@ -42,7 +44,8 @@ export function FreighterPage() {
                 <span className="text-lg font-bold text-nms-text">{freighter.name}</span>
                 <ClassBadge itemClass={freighter.class} />
               </div>
-              <div className="text-xs text-nms-text-muted">Seed: {freighter.seed} | 種族: {freighter.race}</div>
+              <SeedEditor seed={freighter.seed} onSeedChange={() => addNotification('種子碼已更新', 'success')} />
+              <div className="text-[10px] text-nms-text-muted mt-0.5">種族: {freighter.race}</div>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -97,6 +100,9 @@ export function FreighterPage() {
           ))}
         </div>
       </div>
+
+      {/* Coordinate viewer */}
+      <CoordinateViewer address={{ galaxy: 'Euclid', portalCode: '012345678ABC' }} />
     </div>
   );
 }

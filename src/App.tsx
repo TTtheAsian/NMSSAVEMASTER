@@ -13,6 +13,7 @@ import { VehiclesPage } from './pages/VehiclesPage';
 import { CompanionsPage } from './pages/CompanionsPage';
 import { BasesPage } from './pages/BasesPage';
 import { SettlementsPage } from './pages/SettlementsPage';
+import { DiscoveryPage } from './pages/DiscoveryPage';
 import { SquadronPage } from './pages/SquadronPage';
 import { AccountPage } from './pages/AccountPage';
 import { SettingsPage } from './pages/SettingsPage';
@@ -30,6 +31,7 @@ const pages: Record<string, React.FC> = {
   companions: CompanionsPage,
   bases: BasesPage,
   settlements: SettlementsPage,
+  discovery: DiscoveryPage,
   squadron: SquadronPage,
   account: AccountPage,
   settings: SettingsPage,

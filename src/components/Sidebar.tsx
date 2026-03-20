@@ -1,7 +1,7 @@
 import {
   LayoutDashboard, Package, Rocket, Crosshair, Truck, Ship,
   Users, PawPrint, Home, Building2, UserCheck, ChevronLeft,
-  ChevronRight, Save, Settings
+  ChevronRight, Save, Settings, Telescope
 } from 'lucide-react';
 import { useStore } from '../store/useStore';
 
@@ -16,6 +16,7 @@ const menuItems = [
   { id: 'companions', label: '同伴寵物', labelEN: 'Companions', icon: PawPrint, shortcut: 'Alt+C' },
   { id: 'bases', label: '基地管理', labelEN: 'Bases', icon: Home, shortcut: 'Alt+B' },
   { id: 'settlements', label: '定居點', labelEN: 'Settlements', icon: Building2, shortcut: '' },
+  { id: 'discovery', label: '發現與知識', labelEN: 'Discovery', icon: Telescope, shortcut: '' },
   { id: 'squadron', label: '中隊管理', labelEN: 'Squadron', icon: UserCheck, shortcut: '' },
   { id: 'account', label: '帳號資料', labelEN: 'Account', icon: Users, shortcut: '' },
   { id: 'settings', label: '設定', labelEN: 'Settings', icon: Settings, shortcut: '' },
