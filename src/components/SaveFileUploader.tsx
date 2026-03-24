@@ -61,7 +61,7 @@ export function SaveFileUploader({ onParsed }: SaveFileUploaderProps) {
   const playerData = result?.deobfuscated?.['PlayerStateData'] as Record<string, unknown> | undefined;
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {/* Drop zone */}
       <div
         onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
@@ -71,7 +71,7 @@ export function SaveFileUploader({ onParsed }: SaveFileUploaderProps) {
         className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all ${
           dragging
             ? 'border-nms-accent bg-nms-accent/5'
-            : 'border-nms-border hover:border-nms-accent/40 hover:bg-nms-hover/30'
+            : 'border-nms-border/60 hover:border-nms-accent/30 hover:bg-nms-hover/20'
         }`}
       >
         <input
@@ -86,33 +86,33 @@ export function SaveFileUploader({ onParsed }: SaveFileUploaderProps) {
         />
         {loading ? (
           <div className="flex flex-col items-center gap-2">
-            <Loader2 size={32} className="text-nms-accent animate-spin" />
-            <div className="text-sm text-nms-text">正在解析存檔...</div>
+            <Loader2 size={28} className="text-nms-accent animate-spin" />
+            <div className="text-[12px] text-nms-text">正在解析存檔...</div>
           </div>
         ) : (
           <div className="flex flex-col items-center gap-2">
-            <Upload size={32} className={`${dragging ? 'text-nms-accent' : 'text-nms-text-muted'}`} />
-            <div className="text-sm text-nms-text">拖放存檔到這裡 或 點擊選擇</div>
-            <div className="text-[10px] text-nms-text-muted">支援 .hg / .json 格式 (Steam / GOG / Game Pass)</div>
+            <Upload size={28} className={`${dragging ? 'text-nms-accent' : 'text-nms-text-muted/60'}`} />
+            <div className="text-[12px] text-nms-text">拖放存檔到這裡 或 點擊選擇</div>
+            <div className="text-[10px] text-nms-text-muted/50">支援 .hg / .json 格式 (Steam / GOG / Game Pass)</div>
           </div>
         )}
       </div>
 
       {/* Save file locations hint */}
-      <div className="flex items-start gap-2 p-3 bg-nms-bg rounded-lg">
-        <Info size={14} className="text-nms-accent2 flex-shrink-0 mt-0.5" />
-        <div className="text-[10px] text-nms-text-muted space-y-0.5">
-          <div><strong className="text-nms-text-dim">Steam:</strong> %APPDATA%\HelloGames\NMS\st_*\save*.hg</div>
-          <div><strong className="text-nms-text-dim">GOG:</strong> %APPDATA%\HelloGames\NMS\DefaultUser\save*.hg</div>
-          <div><strong className="text-nms-text-dim">Game Pass:</strong> %LOCALAPPDATA%\Packages\HelloGames...\SystemAppData\wgs\</div>
+      <div className="flex items-start gap-2 p-2.5 bg-nms-bg-elevated/40 rounded-lg border border-nms-border/30">
+        <Info size={12} className="text-nms-accent2/60 flex-shrink-0 mt-0.5" />
+        <div className="text-[9px] text-nms-text-muted/60 space-y-0.5">
+          <div><strong className="text-nms-text-dim/70">Steam:</strong> %APPDATA%\HelloGames\NMS\st_*\save*.hg</div>
+          <div><strong className="text-nms-text-dim/70">GOG:</strong> %APPDATA%\HelloGames\NMS\DefaultUser\save*.hg</div>
+          <div><strong className="text-nms-text-dim/70">Game Pass:</strong> %LOCALAPPDATA%\Packages\HelloGames...\SystemAppData\wgs\</div>
         </div>
       </div>
 
       {/* Error */}
       {error && (
-        <div className="flex items-center gap-2 p-3 bg-nms-red/10 border border-nms-red/30 rounded-lg">
-          <AlertCircle size={16} className="text-nms-red flex-shrink-0" />
-          <div className="text-xs text-nms-red">{error}</div>
+        <div className="flex items-center gap-2 p-3 bg-nms-red/8 border border-nms-red/20 rounded-xl">
+          <AlertCircle size={14} className="text-nms-red flex-shrink-0" />
+          <div className="text-[11px] text-nms-red">{error}</div>
         </div>
       )}
 
@@ -121,55 +121,55 @@ export function SaveFileUploader({ onParsed }: SaveFileUploaderProps) {
         <div className="bg-nms-card border border-nms-border rounded-xl p-4 space-y-3 animate-fadeIn">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <CheckCircle size={16} className="text-nms-green" />
-              <span className="text-sm font-bold text-nms-text">解析成功</span>
+              <CheckCircle size={14} className="text-nms-green" />
+              <span className="text-[12px] font-bold text-nms-text">解析成功</span>
             </div>
-            <button onClick={handleExport} className="flex items-center gap-1 px-3 py-1 rounded-lg bg-nms-accent/10 text-nms-accent text-xs hover:bg-nms-accent/20 transition-colors">
-              <Download size={12} /> 匯出修改後存檔
+            <button onClick={handleExport} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-nms-accent/10 text-nms-accent text-[11px] font-medium hover:bg-nms-accent/15 transition-colors">
+              <Download size={11} /> 匯出修改後存檔
             </button>
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-center">
-            <div className="bg-nms-bg rounded-lg p-2">
-              <div className="text-[9px] text-nms-text-muted">檔案名稱</div>
-              <div className="text-xs font-mono text-nms-text truncate">{result.fileName}</div>
+            <div className="bg-nms-bg-elevated rounded-lg p-2">
+              <div className="text-[8px] text-nms-text-muted">檔案名稱</div>
+              <div className="text-[10px] font-mono text-nms-text truncate mt-0.5">{result.fileName}</div>
             </div>
-            <div className="bg-nms-bg rounded-lg p-2">
-              <div className="text-[9px] text-nms-text-muted">檔案大小</div>
-              <div className="text-xs text-nms-text">{(result.fileSize / 1024).toFixed(1)} KB</div>
+            <div className="bg-nms-bg-elevated rounded-lg p-2">
+              <div className="text-[8px] text-nms-text-muted">檔案大小</div>
+              <div className="text-[10px] text-nms-text mt-0.5">{(result.fileSize / 1024).toFixed(1)} KB</div>
             </div>
-            <div className="bg-nms-bg rounded-lg p-2">
-              <div className="text-[9px] text-nms-text-muted">壓縮狀態</div>
-              <div className="text-xs text-nms-text">{result.wasCompressed ? '已壓縮 (Zlib)' : '未壓縮'}</div>
+            <div className="bg-nms-bg-elevated rounded-lg p-2">
+              <div className="text-[8px] text-nms-text-muted">壓縮狀態</div>
+              <div className="text-[10px] text-nms-text mt-0.5">{result.wasCompressed ? '已壓縮 (Zlib)' : '未壓縮'}</div>
             </div>
-            <div className="bg-nms-bg rounded-lg p-2">
-              <div className="text-[9px] text-nms-text-muted">星幣</div>
-              <div className="text-xs font-bold text-nms-gold">{((playerData['Units'] as number) || 0).toLocaleString()}</div>
+            <div className="bg-nms-bg-elevated rounded-lg p-2">
+              <div className="text-[8px] text-nms-text-muted">星幣</div>
+              <div className="text-[10px] font-bold text-nms-gold mt-0.5">{((playerData['Units'] as number) || 0).toLocaleString()}</div>
             </div>
           </div>
 
-          <div className="grid grid-cols-3 md:grid-cols-6 gap-2 text-center text-[10px]">
-            <div className="bg-nms-bg rounded p-1.5">
+          <div className="grid grid-cols-3 md:grid-cols-6 gap-2 text-center text-[9px]">
+            <div className="bg-nms-bg-elevated rounded p-1.5">
               <div className="text-nms-text-muted">飛船</div>
               <div className="font-bold text-nms-text">{((playerData['ShipOwnership'] as unknown[]) || []).length}</div>
             </div>
-            <div className="bg-nms-bg rounded p-1.5">
+            <div className="bg-nms-bg-elevated rounded p-1.5">
               <div className="text-nms-text-muted">工具</div>
               <div className="font-bold text-nms-text">{((playerData['Multitools'] as unknown[]) || []).length}</div>
             </div>
-            <div className="bg-nms-bg rounded p-1.5">
+            <div className="bg-nms-bg-elevated rounded p-1.5">
               <div className="text-nms-text-muted">載具</div>
               <div className="font-bold text-nms-text">{((playerData['VehicleOwnership'] as unknown[]) || []).length}</div>
             </div>
-            <div className="bg-nms-bg rounded p-1.5">
+            <div className="bg-nms-bg-elevated rounded p-1.5">
               <div className="text-nms-text-muted">同伴</div>
               <div className="font-bold text-nms-text">{((playerData['Pets'] as unknown[]) || []).length}</div>
             </div>
-            <div className="bg-nms-bg rounded p-1.5">
+            <div className="bg-nms-bg-elevated rounded p-1.5">
               <div className="text-nms-text-muted">基地</div>
               <div className="font-bold text-nms-text">{((playerData['PersistentPlayerBases'] as unknown[]) || []).length}</div>
             </div>
-            <div className="bg-nms-bg rounded p-1.5">
+            <div className="bg-nms-bg-elevated rounded p-1.5">
               <div className="text-nms-text-muted">科技</div>
               <div className="font-bold text-nms-text">{((playerData['KnownTech'] as unknown[]) || []).length}</div>
             </div>

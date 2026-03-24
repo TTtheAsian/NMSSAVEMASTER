@@ -11,18 +11,18 @@ export function Notifications() {
       {notifications.map((n) => (
         <div
           key={n.id}
-          className={`animate-slideIn flex items-center gap-2 px-4 py-3 rounded-lg border shadow-lg backdrop-blur-md min-w-64 ${
-            n.type === 'success' ? 'bg-nms-green/10 border-nms-green/30 text-nms-green' :
-            n.type === 'error' ? 'bg-nms-red/10 border-nms-red/30 text-nms-red' :
-            'bg-nms-accent/10 border-nms-accent/30 text-nms-accent'
+          className={`animate-slideIn flex items-center gap-2.5 px-4 py-3 rounded-xl border shadow-xl glass min-w-72 ${
+            n.type === 'success' ? 'border-nms-green/25 text-nms-green' :
+            n.type === 'error' ? 'border-nms-red/25 text-nms-red' :
+            'border-nms-accent/25 text-nms-accent'
           }`}
         >
-          {n.type === 'success' && <CheckCircle size={16} />}
-          {n.type === 'error' && <XCircle size={16} />}
-          {n.type === 'info' && <Info size={16} />}
-          <span className="text-sm flex-1">{n.message}</span>
-          <button onClick={() => removeNotification(n.id)} className="opacity-60 hover:opacity-100">
-            <X size={14} />
+          {n.type === 'success' && <CheckCircle size={15} />}
+          {n.type === 'error' && <XCircle size={15} />}
+          {n.type === 'info' && <Info size={15} />}
+          <span className="text-[12px] flex-1 font-medium">{n.message}</span>
+          <button onClick={() => removeNotification(n.id)} className="opacity-40 hover:opacity-100 transition-opacity">
+            <X size={13} />
           </button>
         </div>
       ))}

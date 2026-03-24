@@ -88,8 +88,8 @@ function App() {
       <Notifications />
       <CommandPalette />
       <FloatingActions />
-      <main className={`pt-14 transition-all duration-300 ${sidebarCollapsed ? 'ml-16' : 'ml-56'}`}>
-        <div className="p-6 max-w-7xl mx-auto">
+      <main className={`relative z-10 pt-14 transition-all duration-300 ${sidebarCollapsed ? 'ml-[60px]' : 'ml-[220px]'}`}>
+        <div className="p-5 max-w-7xl mx-auto">
           <PageComponent />
         </div>
       </main>

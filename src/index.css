@@ -1,68 +1,99 @@
 @import "tailwindcss";
 
 @theme {
-  --color-nms-bg: #0a0e17;
-  --color-nms-panel: #111827;
-  --color-nms-card: #1a2235;
-  --color-nms-card-alt: #1e2740;
-  --color-nms-border: #2a3548;
-  --color-nms-hover: #243049;
-  --color-nms-accent: #3b82f6;
-  --color-nms-accent2: #06b6d4;
-  --color-nms-gold: #f59e0b;
-  --color-nms-green: #10b981;
-  --color-nms-red: #ef4444;
-  --color-nms-purple: #8b5cf6;
-  --color-nms-orange: #f97316;
-  --color-nms-text: #e2e8f0;
-  --color-nms-text-dim: #94a3b8;
-  --color-nms-text-muted: #64748b;
-  --color-class-s: #f59e0b;
-  --color-class-a: #ef4444;
-  --color-class-b: #3b82f6;
+  --color-nms-bg: #060a12;
+  --color-nms-bg-elevated: #0c1220;
+  --color-nms-panel: #0f1729;
+  --color-nms-card: #141e33;
+  --color-nms-card-alt: #182440;
+  --color-nms-border: #1e2d4a;
+  --color-nms-border-bright: #2a3f66;
+  --color-nms-hover: #1a2d50;
+  --color-nms-accent: #4f8fff;
+  --color-nms-accent2: #00d4aa;
+  --color-nms-gold: #fbbf24;
+  --color-nms-green: #22c55e;
+  --color-nms-red: #f43f5e;
+  --color-nms-purple: #a78bfa;
+  --color-nms-orange: #fb923c;
+  --color-nms-text: #eaf0ff;
+  --color-nms-text-dim: #94a3c4;
+  --color-nms-text-muted: #5a6d8e;
+  --color-class-s: #fbbf24;
+  --color-class-a: #f43f5e;
+  --color-class-b: #4f8fff;
   --color-class-c: #6b7280;
 }
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: #2a3548 transparent;
+  scrollbar-color: #1e2d4a transparent;
 }
 
 body {
   margin: 0;
-  background: #0a0e17;
-  color: #e2e8f0;
-  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: #060a12;
+  color: #eaf0ff;
+  font-family: 'Inter', 'SF Pro Display', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 #root {
   min-height: 100vh;
 }
 
+/* Subtle background pattern */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% -20%, rgba(79, 143, 255, 0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 100%, rgba(167, 139, 250, 0.04) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Animations */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
+  from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: translateY(0); }
 }
 @keyframes slideIn {
-  from { opacity: 0; transform: translateX(-12px); }
+  from { opacity: 0; transform: translateX(-8px); }
   to { opacity: 1; transform: translateX(0); }
 }
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 @keyframes pulseGlow {
-  0%, 100% { box-shadow: 0 0 8px rgba(59,130,246,0.3); }
-  50% { box-shadow: 0 0 20px rgba(59,130,246,0.6); }
+  0%, 100% { box-shadow: 0 0 6px rgba(79,143,255,0.25), 0 0 12px rgba(79,143,255,0.1); }
+  50% { box-shadow: 0 0 12px rgba(79,143,255,0.4), 0 0 24px rgba(79,143,255,0.15); }
 }
 @keyframes shimmer {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
 }
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+@keyframes borderGlow {
+  0%, 100% { border-color: rgba(79,143,255,0.2); }
+  50% { border-color: rgba(79,143,255,0.5); }
+}
 
-.animate-fadeIn { animation: fadeIn 0.3s ease-out; }
-.animate-slideIn { animation: slideIn 0.25s ease-out; }
-.pulse-glow { animation: pulseGlow 2s ease-in-out infinite; }
+.animate-fadeIn { animation: fadeIn 0.3s ease-out both; }
+.animate-slideIn { animation: slideIn 0.25s ease-out both; }
+.animate-slideUp { animation: slideUp 0.35s ease-out both; }
+.pulse-glow { animation: pulseGlow 2.5s ease-in-out infinite; }
+.animate-float { animation: float 3s ease-in-out infinite; }
 .shimmer {
-  background: linear-gradient(90deg, transparent 0%, rgba(59,130,246,0.1) 50%, transparent 100%);
+  background: linear-gradient(90deg, transparent 0%, rgba(79,143,255,0.08) 50%, transparent 100%);
   background-size: 200% 100%;
-  animation: shimmer 2s infinite;
+  animation: shimmer 2.5s infinite;
 }
 
 /* Custom range slider */
@@ -71,47 +102,76 @@ input[type="range"] {
   appearance: none;
   height: 6px;
   border-radius: 3px;
-  background: #2a3548;
+  background: #1e2d4a;
   outline: none;
 }
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
-  width: 14px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
-  background: #3b82f6;
+  background: #4f8fff;
   cursor: pointer;
-  border: 2px solid #0a0e17;
-  box-shadow: 0 0 4px rgba(59,130,246,0.4);
+  border: 2px solid #060a12;
+  box-shadow: 0 0 6px rgba(79,143,255,0.4), 0 1px 3px rgba(0,0,0,0.3);
+  transition: transform 0.15s ease;
+}
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
 }
 input[type="range"]::-moz-range-thumb {
-  width: 14px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
-  background: #3b82f6;
+  background: #4f8fff;
   cursor: pointer;
-  border: 2px solid #0a0e17;
+  border: 2px solid #060a12;
 }
 
 /* Select styling */
 select option {
-  background: #111827;
-  color: #e2e8f0;
+  background: #0f1729;
+  color: #eaf0ff;
 }
 
 /* Focus ring */
 *:focus-visible {
-  outline: 2px solid rgba(59,130,246,0.5);
+  outline: 2px solid rgba(79,143,255,0.4);
   outline-offset: 2px;
+}
+
+/* Glass effect utility */
+.glass {
+  background: rgba(15, 23, 41, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+/* Card hover glow */
+.card-glow {
+  transition: all 0.25s ease;
+}
+.card-glow:hover {
+  box-shadow: 0 0 0 1px rgba(79,143,255,0.15), 0 4px 24px rgba(0,0,0,0.3);
 }
 
 /* Smooth page transitions */
 .page-enter {
   opacity: 0;
-  transform: translateY(10px);
+  transform: translateY(8px);
 }
 .page-enter-active {
   opacity: 1;
   transform: translateY(0);
-  transition: opacity 200ms, transform 200ms;
+  transition: opacity 250ms ease, transform 250ms ease;
+}
+
+/* Number input hide spinner */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
 }
