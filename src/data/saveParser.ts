@@ -110,14 +110,12 @@ export interface ParsedSaveFile {
   fileSize: number;
 }
 
-// Parse an uploaded NMS save file
-export async function parseSaveFile(file: File): Promise<ParsedSaveFile> {
-  const buffer = await file.arrayBuffer();
+// Parse from ArrayBuffer (used by Electron native file dialog)
+export async function parseSaveBuffer(buffer: ArrayBuffer, fileName: string): Promise<ParsedSaveFile> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let bytes = new Uint8Array(buffer) as any;
   let wasCompressed = false;
 
-  // Check for zlib compression
   if (isZlibCompressed(bytes)) {
     try {
       bytes = await zlibDecompress(bytes);
@@ -127,10 +125,8 @@ export async function parseSaveFile(file: File): Promise<ParsedSaveFile> {
     }
   }
 
-  // Decode as UTF-8
   const text = new TextDecoder('utf-8').decode(bytes);
 
-  // Parse JSON
   let raw: Record<string, unknown>;
   try {
     raw = JSON.parse(text);
@@ -138,16 +134,21 @@ export async function parseSaveFile(file: File): Promise<ParsedSaveFile> {
     throw new Error(`無法解析存檔 JSON: ${(e as Error).message}`);
   }
 
-  // Deobfuscate
   const deobfuscated = deobfuscateJson(raw) as Record<string, unknown>;
 
   return {
     raw,
     deobfuscated,
     wasCompressed,
-    fileName: file.name,
-    fileSize: file.size,
+    fileName,
+    fileSize: buffer.byteLength,
   };
+}
+
+// Parse an uploaded NMS save file (browser File API)
+export async function parseSaveFile(file: File): Promise<ParsedSaveFile> {
+  const buffer = await file.arrayBuffer();
+  return parseSaveBuffer(buffer, file.name);
 }
 
 // Export save file back to downloadable format

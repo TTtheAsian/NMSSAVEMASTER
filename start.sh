@@ -11,6 +11,15 @@ echo "  ║     No Man's Sky 存檔管理大師            ║"
 echo "  ╚══════════════════════════════════════════╝"
 echo ""
 
+# Check if AppImage exists
+APPIMAGE=$(find release/ -name "*.AppImage" 2>/dev/null | head -1)
+if [ -n "$APPIMAGE" ]; then
+    echo "  [OK] 偵測到已打包的應用程式"
+    echo "  [>>] 正在啟動 NMS Save Master..."
+    chmod +x "$APPIMAGE"
+    exec "$APPIMAGE"
+fi
+
 # Check if Node.js is installed
 if ! command -v node &> /dev/null; then
     echo "  [!] 未偵測到 Node.js"
@@ -58,12 +67,35 @@ else
 fi
 
 echo ""
-echo "  [>>] 正在啟動 NMS Save Master..."
-echo "  [>>] 瀏覽器將自動開啟"
-echo "  [>>] 按 Ctrl+C 即可停止伺服器"
+echo "  請選擇啟動方式:"
+echo "  [1] 桌面應用程式 (Electron) - 推薦"
+echo "  [2] 瀏覽器模式 (localhost)"
+echo "  [3] 打包成執行檔"
 echo ""
-echo "  ────────────────────────────────────────────"
-echo ""
+read -p "  請輸入選項 (1/2/3): " choice
 
-# Start dev server and open browser
-npx vite --open
+case "$choice" in
+    2)
+        echo ""
+        echo "  [>>] 正在啟動瀏覽器模式..."
+        echo "  [>>] 瀏覽器將自動開啟"
+        echo "  [>>] 按 Ctrl+C 即可停止伺服器"
+        echo ""
+        npx vite --open
+        ;;
+    3)
+        echo ""
+        echo "  [>>] 正在打包應用程式..."
+        echo "  [>>] 這可能需要幾分鐘..."
+        echo ""
+        npm run build:linux
+        echo ""
+        echo "  [OK] 打包完成！檔案在 release/ 資料夾中"
+        ;;
+    *)
+        echo ""
+        echo "  [>>] 正在啟動桌面應用程式..."
+        echo ""
+        ELECTRON=true npx vite
+        ;;
+esac

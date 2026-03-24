@@ -12,6 +12,14 @@ echo   ║     No Man's Sky 存檔管理大師            ║
 echo   ╚══════════════════════════════════════════╝
 echo.
 
+:: Check if portable exe exists in release folder
+if exist "release\NMS-Save-Master-Portable.exe" (
+    echo   [OK] 偵測到已打包的執行檔
+    echo   [>>] 正在啟動 NMS Save Master...
+    start "" "release\NMS-Save-Master-Portable.exe"
+    exit /b 0
+)
+
 :: Check if Node.js is installed
 where node >nul 2>&1
 if %errorlevel% neq 0 (
@@ -61,12 +69,38 @@ if not exist "node_modules" (
 )
 
 echo.
-echo   [>>] 正在啟動 NMS Save Master...
-echo   [>>] 瀏覽器將自動開啟
-echo   [>>] 關閉此視窗即可停止伺服器
+echo   請選擇啟動方式:
+echo   [1] 桌面應用程式 (Electron) - 推薦
+echo   [2] 瀏覽器模式 (localhost)
+echo   [3] 打包成執行檔 (.exe)
 echo.
-echo   ────────────────────────────────────────────
-echo.
+set /p choice="  請輸入選項 (1/2/3): "
 
-:: Start dev server and open browser
-call npx vite --open
+if "%choice%"=="2" (
+    echo.
+    echo   [>>] 正在啟動瀏覽器模式...
+    echo   [>>] 瀏覽器將自動開啟
+    echo   [>>] 關閉此視窗即可停止伺服器
+    echo.
+    call npx vite --open
+) else if "%choice%"=="3" (
+    echo.
+    echo   [>>] 正在打包成執行檔...
+    echo   [>>] 這可能需要幾分鐘...
+    echo.
+    call npm run build:win
+    if %errorlevel% equ 0 (
+        echo.
+        echo   [OK] 打包完成！執行檔在 release\ 資料夾中
+        explorer release
+    ) else (
+        echo   [!] 打包失敗
+    )
+    pause
+) else (
+    echo.
+    echo   [>>] 正在啟動桌面應用程式...
+    echo.
+    set ELECTRON=true
+    call npx vite
+)

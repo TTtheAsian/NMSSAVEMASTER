@@ -1,8 +1,10 @@
 import { useState, useRef } from 'react';
 import { Upload, AlertCircle, CheckCircle, Loader2, Download, Info } from 'lucide-react';
-import { parseSaveFile, exportSaveFile } from '../data/saveParser';
+import { parseSaveFile, parseSaveBuffer, exportSaveFile } from '../data/saveParser';
 import type { ParsedSaveFile } from '../data/saveParser';
 import { useStore } from '../store/useStore';
+
+const isElectron = typeof window !== 'undefined' && 'electronAPI' in window;
 
 interface SaveFileUploaderProps {
   onParsed?: (result: ParsedSaveFile) => void;
@@ -35,6 +37,31 @@ export function SaveFileUploader({ onParsed }: SaveFileUploaderProps) {
     }
   };
 
+  const handleElectronOpen = async () => {
+    if (!window.electronAPI) return;
+    setLoading(true);
+    setError(null);
+    setResult(null);
+
+    try {
+      const fileData = await window.electronAPI.openFile();
+      if (!fileData) {
+        setLoading(false);
+        return; // User cancelled
+      }
+      const parsed = await parseSaveBuffer(fileData.buffer, fileData.name);
+      setResult(parsed);
+      addNotification(`存檔解析成功！(${(fileData.size / 1024).toFixed(1)} KB${parsed.wasCompressed ? ', 已解壓縮' : ''})`, 'success');
+      onParsed?.(parsed);
+    } catch (e) {
+      const msg = (e as Error).message;
+      setError(msg);
+      addNotification(`存檔解析失敗: ${msg}`, 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setDragging(false);
@@ -46,15 +73,34 @@ export function SaveFileUploader({ onParsed }: SaveFileUploaderProps) {
     if (!result) return;
     try {
       const blob = await exportSaveFile(result.deobfuscated as Record<string, unknown>, result.fileName, result.wasCompressed);
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `${result.fileName}_modified`;
-      a.click();
-      URL.revokeObjectURL(url);
-      addNotification('存檔已匯出！', 'success');
+
+      if (isElectron && window.electronAPI) {
+        // Electron: native save dialog
+        const arrayBuffer = await blob.arrayBuffer();
+        const saved = await window.electronAPI.saveFile(arrayBuffer, `${result.fileName}_modified`);
+        if (saved) {
+          addNotification('存檔已匯出！', 'success');
+        }
+      } else {
+        // Browser: download via anchor
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${result.fileName}_modified`;
+        a.click();
+        URL.revokeObjectURL(url);
+        addNotification('存檔已匯出！', 'success');
+      }
     } catch {
       addNotification('匯出失敗', 'error');
+    }
+  };
+
+  const handleDropZoneClick = () => {
+    if (isElectron) {
+      handleElectronOpen();
+    } else {
+      fileRef.current?.click();
     }
   };
 
@@ -67,23 +113,25 @@ export function SaveFileUploader({ onParsed }: SaveFileUploaderProps) {
         onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
         onDragLeave={() => setDragging(false)}
         onDrop={handleDrop}
-        onClick={() => fileRef.current?.click()}
+        onClick={handleDropZoneClick}
         className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all ${
           dragging
             ? 'border-nms-accent bg-nms-accent/5'
             : 'border-nms-border/60 hover:border-nms-accent/30 hover:bg-nms-hover/20'
         }`}
       >
-        <input
-          ref={fileRef}
-          type="file"
-          accept=".hg,.json,*"
-          className="hidden"
-          onChange={(e) => {
-            const file = e.target.files?.[0];
-            if (file) handleFile(file);
-          }}
-        />
+        {!isElectron && (
+          <input
+            ref={fileRef}
+            type="file"
+            accept=".hg,.json,*"
+            className="hidden"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) handleFile(file);
+            }}
+          />
+        )}
         {loading ? (
           <div className="flex flex-col items-center gap-2">
             <Loader2 size={28} className="text-nms-accent animate-spin" />
@@ -92,21 +140,25 @@ export function SaveFileUploader({ onParsed }: SaveFileUploaderProps) {
         ) : (
           <div className="flex flex-col items-center gap-2">
             <Upload size={28} className={`${dragging ? 'text-nms-accent' : 'text-nms-text-muted/60'}`} />
-            <div className="text-[12px] text-nms-text">拖放存檔到這裡 或 點擊選擇</div>
+            <div className="text-[12px] text-nms-text">
+              {isElectron ? '點擊選擇存檔 或 拖放檔案到這裡' : '拖放存檔到這裡 或 點擊選擇'}
+            </div>
             <div className="text-[10px] text-nms-text-muted/50">支援 .hg / .json 格式 (Steam / GOG / Game Pass)</div>
           </div>
         )}
       </div>
 
       {/* Save file locations hint */}
-      <div className="flex items-start gap-2 p-2.5 bg-nms-bg-elevated/40 rounded-lg border border-nms-border/30">
-        <Info size={12} className="text-nms-accent2/60 flex-shrink-0 mt-0.5" />
-        <div className="text-[9px] text-nms-text-muted/60 space-y-0.5">
-          <div><strong className="text-nms-text-dim/70">Steam:</strong> %APPDATA%\HelloGames\NMS\st_*\save*.hg</div>
-          <div><strong className="text-nms-text-dim/70">GOG:</strong> %APPDATA%\HelloGames\NMS\DefaultUser\save*.hg</div>
-          <div><strong className="text-nms-text-dim/70">Game Pass:</strong> %LOCALAPPDATA%\Packages\HelloGames...\SystemAppData\wgs\</div>
+      {!isElectron && (
+        <div className="flex items-start gap-2 p-2.5 bg-nms-bg-elevated/40 rounded-lg border border-nms-border/30">
+          <Info size={12} className="text-nms-accent2/60 flex-shrink-0 mt-0.5" />
+          <div className="text-[9px] text-nms-text-muted/60 space-y-0.5">
+            <div><strong className="text-nms-text-dim/70">Steam:</strong> %APPDATA%\HelloGames\NMS\st_*\save*.hg</div>
+            <div><strong className="text-nms-text-dim/70">GOG:</strong> %APPDATA%\HelloGames\NMS\DefaultUser\save*.hg</div>
+            <div><strong className="text-nms-text-dim/70">Game Pass:</strong> %LOCALAPPDATA%\Packages\HelloGames...\SystemAppData\wgs\</div>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Error */}
       {error && (
